@@ -37,8 +37,20 @@ namespace System.InversionOfControl
         /// <returns>Returns the first matching binding or <c>null</c> if none could be found.</returns>
         internal IBinding FindMatchingBinding(Type typeToResolve, Type typeInjectedInto)
         {
-            // Gets the first matching binding and returns it if it was found
-            IBinding matchedBinding = this.bindings.FirstOrDefault(binding => binding.CanResolve(typeToResolve, typeInjectedInto));
+            // Gets all bindings that could resolve the specified type
+            IEnumerable<IBinding> matchingBindings = this.bindings.Where(binding => binding.CanResolve(typeToResolve, typeInjectedInto));
+
+            // Finds the best matching binding in the following order of precedence: when injected exactly into, when injected into, normal bindings, and finally default bindings
+            IBinding matchedBinding = matchingBindings.FirstOrDefault(binding => !(binding is DefaultBinding) && binding.TypeInjectedInto == typeInjectedInto && binding.ShouldOnlyInjectExactlyInto);
+            if (matchedBinding != null)
+                return matchedBinding;
+            matchedBinding = matchingBindings.FirstOrDefault(binding => !(binding is DefaultBinding) && binding.TypeInjectedInto == typeInjectedInto);
+            if (matchedBinding != null)
+                return matchedBinding;
+            matchedBinding = matchingBindings.FirstOrDefault(binding => !(binding is DefaultBinding));
+            if (matchedBinding != null)
+                return matchedBinding;
+            matchedBinding = matchingBindings.FirstOrDefault();
             if (matchedBinding != null)
                 return matchedBinding;
 

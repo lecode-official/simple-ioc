@@ -24,8 +24,8 @@ namespace SimpleIoc.Samples.Console
             Kernel kernel = new Kernel();
 
             // Binds the vehicles to the kernel
-            kernel.Bind<IVehicle>().ToType<Motorcycle>().InTransientScope().WhenInjectedInto<SuperCoolPerson>(); // Obviously super cool people drive motorcycles!
             kernel.Bind<IVehicle>().ToType<Car>();
+            kernel.Bind<IVehicle>().ToType<Motorcycle>().InTransientScope().WhenInjectedInto<SuperCoolPerson>(); // Obviously super cool people drive motorcycles!
 
             // Creates two persons and prints them out
             Person person = kernel.Resolve<Person>();

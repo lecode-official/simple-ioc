@@ -27,7 +27,7 @@ namespace System.InversionOfControl
         private Binding(Kernel kernel, Type typeBound)
         {
             this.kernel = kernel;
-            this.typeBound = typeBound;
+            this.TypeBound = typeBound;
         }
 
         #endregion
@@ -45,30 +45,9 @@ namespace System.InversionOfControl
         private ResolvingScope scope = ResolvingScope.Transient;
 
         /// <summary>
-        /// Contains the type that is bound by the binding.
-        /// </summary>
-        private Type typeBound;
-
-        /// <summary>
-        /// Contains the type to which the binding should be resolved to.
-        /// </summary>
-        private Type typeToResolveTo;
-
-        /// <summary>
         /// Contains the factory method, which should be used to instantiate the type.
         /// </summary>
         private Func<T> typeResolveFactory;
-
-        /// <summary>
-        /// Contains the type into which the binding should only inject to.
-        /// </summary>
-        private Type typeInjectedInto;
-
-        /// <summary>
-        /// Contains a value that determines whether the binding should inject into the type specified in <see cref="typeInjectedInto"/> and its sub-classes or only into the type specified in <see cref="typeInjectedInto"/>. Only applies if
-        /// <see cref="typeInjectedInto"/> is not <c>null</c>.
-        /// </summary>
-        private bool shouldOnlyInjectExactlyInto;
 
         /// <summary>
         /// Contains a resolved singleton instance. This is only used if the binding is in singleton scope. A resolved singleton instance is stored separately, because it must not be a weak reference (if it were, there is a chance that the
@@ -85,9 +64,33 @@ namespace System.InversionOfControl
         /// Contains a value that determines whether binding is currently being disposed.
         /// </summary>
         private bool isDisposing;
-        
+
         #endregion
-        
+
+        #region Public Properties
+
+        /// <summary>
+        /// Contains the type that is bound by the binding.
+        /// </summary>
+        public Type TypeBound { get; private set; }
+
+        /// <summary>
+        /// Contains the type to which the binding should be resolved to.
+        /// </summary>
+        public Type TypeToResolveTo { get; private set; }
+
+        /// <summary>
+        /// Contains the type into which the binding should only inject to.
+        /// </summary>
+        public Type TypeInjectedInto { get; private set; }
+
+        /// <summary>
+        /// Contains a value that determines whether the binding should inject into the type specified in <see cref="TypeInjectedInto"/> and its sub-classes or only into the type specified in <see cref="TypeInjectedInto"/>. Only applies if <see cref="TypeInjectedInto"/> is not <c>null</c>.
+        /// </summary>
+        public bool ShouldOnlyInjectExactlyInto { get; private set; }
+
+        #endregion
+
         #region Public Static Methods
 
         /// <summary>
@@ -121,25 +124,25 @@ namespace System.InversionOfControl
         public bool CanResolve(Type typeToResolve, Type injectionTargetType)
         {
             // Checks if the the binding has a constraint for the types that it may be injected into
-            if (this.typeInjectedInto != null)
+            if (this.TypeInjectedInto != null)
             {
                 // Checks if the type is injected into anything, if not then the type cannot be resolved
                 if (injectionTargetType == null)
                     return false;
 
                 // Checks if the type can be injected into
-                if (this.shouldOnlyInjectExactlyInto && this.typeInjectedInto != injectionTargetType)
+                if (this.ShouldOnlyInjectExactlyInto && this.TypeInjectedInto != injectionTargetType)
                     return false;
-                if (!this.shouldOnlyInjectExactlyInto)
+                if (!this.ShouldOnlyInjectExactlyInto)
                 {
                     TypeInfo typeInformation = injectionTargetType.GetTypeInfo();
-                    if (this.typeInjectedInto != injectionTargetType && !typeInformation.IsSubclassOf(this.typeInjectedInto) && !typeInformation.ImplementedInterfaces.Contains(injectionTargetType))
+                    if (this.TypeInjectedInto != injectionTargetType && !typeInformation.IsSubclassOf(this.TypeInjectedInto) && !typeInformation.ImplementedInterfaces.Contains(injectionTargetType))
                         return false;
                 }
             }
 
             // Checks if the type that is to be resolved is the type that is bound by this binding
-            return this.typeBound == typeToResolve;
+            return this.TypeBound == typeToResolve;
         }
 
         /// <summary>
@@ -179,14 +182,14 @@ namespace System.InversionOfControl
             }
 
             // Gets the information about all the constructors of the type and sorts them by their parameter count (the algorithm is greedy and tries to take the constructor that has the most parameters it is able to resolve)
-            TypeInfo typeInformation = this.typeToResolveTo.GetTypeInfo();
+            TypeInfo typeInformation = this.TypeToResolveTo.GetTypeInfo();
             IOrderedEnumerable<ConstructorInfo> constructorInformations = typeInformation.DeclaredConstructors.OrderByDescending(constructorInformation => constructorInformation.GetParameters().Count());
             
             // Cycles over all the constructors and tries them one by one
             foreach (ConstructorInfo constructorInformation in constructorInformations)
             {
                 // Gets all the parameters of the constructor
-                Dictionary<ParameterInfo, IBinding> parameterInformations = constructorInformation.GetParameters().ToDictionary(parameterInformation => parameterInformation, parameterInformation => this.kernel.FindMatchingBinding(parameterInformation.ParameterType, this.typeToResolveTo));
+                Dictionary<ParameterInfo, IBinding> parameterInformations = constructorInformation.GetParameters().ToDictionary(parameterInformation => parameterInformation, parameterInformation => this.kernel.FindMatchingBinding(parameterInformation.ParameterType, this.TypeToResolveTo));
 
                 // Tries to resolve all the parameters
                 List<object> parameterValues = new List<object>();
@@ -266,7 +269,7 @@ namespace System.InversionOfControl
                 throw new InvalidOperationException("Resolving type must not be generic.");
 
             // Sets the type to which the binding is bound
-            this.typeToResolveTo = newTypeToResolveTo;
+            this.TypeToResolveTo = newTypeToResolveTo;
 
             // Returns the binding so that calls to it may be chained
             return this;
@@ -329,8 +332,8 @@ namespace System.InversionOfControl
         /// <typeparam name="TInjectionTarget">The type the binding should only be injected into.</typeparam>
         public void WhenInjectedInto<TInjectionTarget>() where TInjectionTarget : class
         {
-            this.typeInjectedInto = typeof(TInjectionTarget);
-            this.shouldOnlyInjectExactlyInto = false;
+            this.TypeInjectedInto = typeof(TInjectionTarget);
+            this.ShouldOnlyInjectExactlyInto = false;
         }
 
         /// <summary>
@@ -347,8 +350,8 @@ namespace System.InversionOfControl
                 throw new InvalidOperationException("Type injected into must not be abstract or interface.");
 
             // Assigns the new values
-            this.typeInjectedInto = newTypeInjectedInto;
-            this.shouldOnlyInjectExactlyInto = true;
+            this.TypeInjectedInto = newTypeInjectedInto;
+            this.ShouldOnlyInjectExactlyInto = true;
         }
 
         #endregion
