@@ -36,7 +36,7 @@
     <Content Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System.InversionOfControl\System.InversionOfControl.csproj" />
+    <ProjectReference Include="..\..\System.InversionOfControl\System.InversionOfControl.csproj" />
   </ItemGroup>
   <Import Project="$(NuProjPath)\NuProj.targets" />
 </Project>
