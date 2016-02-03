@@ -79,7 +79,7 @@ namespace System.InversionOfControl
         /// <summary>
         /// Contains a list of all the instances that have been resolved by this binding.
         /// </summary>
-        private List<WeakReference<T>> resolvedInstances = new List<WeakReference<T>>();
+        private List<T> resolvedInstances = new List<T>();
 
         /// <summary>
         /// Contains a value that determines whether binding is currently being disposed.
@@ -102,7 +102,7 @@ namespace System.InversionOfControl
             // Gets the type information for the type that is to be bound and validates if the type qualifies for binding, if not then an OperationException is thrown
             TypeInfo typeInformation = typeof(T).GetTypeInfo();
             if (typeInformation.ContainsGenericParameters)
-                throw new InvalidOperationException("Bound tyype must not be generic.");
+                throw new InvalidOperationException("Bound type must not be generic.");
 
             // Creates the new binding and returns it
             return new Binding<T>(kernel, typeof(T));
@@ -150,13 +150,6 @@ namespace System.InversionOfControl
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public object Resolve()
         {
-            // Removes all reference that we have already lost the reference for
-            this.resolvedInstances.RemoveAll(instance =>
-                {
-                    T target;
-                    return !instance.TryGetTarget(out target);
-                });
-
             // Checks if the resolve scope is singleton and there is already an instance, if so then the existent instance is returned
             if (this.scope == ResolvingScope.Singleton && this.resolvedSingletonInstance != null)
                 return this.resolvedSingletonInstance;
@@ -167,11 +160,11 @@ namespace System.InversionOfControl
                 // Creates the instance by invoking the factory method
                 T instance = (T)this.typeResolveFactory();
 
-                // Stores the resolved instance (if the binding is in singleton scope, then it must be stored separately so that its reference does not get lost via the weak reference)
+                // Stores the resolved instance (if the binding is in singleton scope, then it is stored separately)
                 if (this.scope == ResolvingScope.Singleton)
                     this.resolvedSingletonInstance = instance;
                 else
-                    this.resolvedInstances.Add(new WeakReference<T>(instance));
+                    this.resolvedInstances.Add(instance);
 
                 // Returns the created instance
                 return instance;
@@ -222,11 +215,11 @@ namespace System.InversionOfControl
                     // Creates the instance by invoking the constructor
                     T instance = (T)constructorInformation.Invoke(parameterValues.ToArray());
 
-                    // Stores the resolved instance (if the binding is in singleton scope, then it must be stored separately so that its reference does not get lost via the weak reference)
+                    // Stores the resolved instance (if the binding is in singleton scope, then it is stored separately)
                     if (this.scope == ResolvingScope.Singleton)
                         this.resolvedSingletonInstance = instance;
                     else
-                        this.resolvedInstances.Add(new WeakReference<T>(instance));
+                        this.resolvedInstances.Add(instance);
 
                     // Returns the created instance
                     return instance;
@@ -370,22 +363,29 @@ namespace System.InversionOfControl
             this.isDisposing = true;
 
             // Cycles over all the instances that have been created by this binding and disposes of them if they are IDisposable
-            foreach (WeakReference<T> reference in this.resolvedInstances.ToList())
+            foreach (T instance in this.resolvedInstances.ToList())
             {
-                T instance;
-                if (reference.TryGetTarget(out instance))
+                // Checks if the instance implements IDisposable, if so it is disposed of, if the object has already been disposed of, then nothing is done
+                try
                 {
                     IDisposable disposibleInstance = instance as IDisposable;
                     if (disposibleInstance != null)
                         disposibleInstance.Dispose();
                 }
-                this.resolvedInstances.Remove(reference);
+                catch (ObjectDisposedException) { }
+
+                // Removes the instance from the list of instances
+                this.resolvedInstances.Remove(instance);
             }
 
-            // Checks if there is a singleton instance that was created, and disposes of it, if it implements IDisposable
-            IDisposable singletonDisposable = this.resolvedSingletonInstance as IDisposable;
-            if (singletonDisposable != null)
-                singletonDisposable.Dispose();
+            // Checks if there is a singleton instance that was created, and disposes of it, if it implements IDisposable, if it already has been disposed of, then nothing is done
+            try
+            {
+                IDisposable singletonDisposable = this.resolvedSingletonInstance as IDisposable;
+                if (singletonDisposable != null)
+                    singletonDisposable.Dispose();
+            }
+            catch (ObjectDisposedException) { }
             this.resolvedSingletonInstance = null;
         }
 

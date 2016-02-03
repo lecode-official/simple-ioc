@@ -45,7 +45,7 @@ namespace System.InversionOfControl
         /// <summary>
         /// Contains a list of all the instances that have been resolved by this binding.
         /// </summary>
-        private List<WeakReference> resolvedInstances = new List<WeakReference>();
+        private List<object> resolvedInstances = new List<object>();
 
         /// <summary>
         /// Contains a value that determines whether binding is currently being disposed.
@@ -99,9 +99,6 @@ namespace System.InversionOfControl
         /// <returns>Returns an instance of the type that is to be resolved.</returns>
         public object Resolve()
         {
-            // Removes all reference that we have already lost the reference for
-            this.resolvedInstances.RemoveAll(instance => !instance.IsAlive);
-
             // Gets the information about all the constructors of the type and sorts them by their parameter count (the algorithm is greedy and tries to take the constructor that has the most parameters it is able to resolve)
             TypeInfo typeInformation = this.typeToBeResolved.GetTypeInfo();
             IOrderedEnumerable<ConstructorInfo> constructorInformations = typeInformation.DeclaredConstructors.OrderByDescending(constructorInformation => constructorInformation.GetParameters().Count());
@@ -175,15 +172,19 @@ namespace System.InversionOfControl
             this.isDisposing = true;
 
             // Cycles over all the instances that have been created by this binding and disposes of them if they are IDisposable
-            foreach (WeakReference reference in this.resolvedInstances.ToList())
+            foreach (object instance in this.resolvedInstances.ToList())
             {
-                if (reference.IsAlive)
+                // Disposed of the instance, if it implements IDisposable, if it already has been disposed of, then nothing is done
+                try
                 {
-                    IDisposable disposibleInstance = reference.Target as IDisposable;
+                    IDisposable disposibleInstance = instance as IDisposable;
                     if (disposibleInstance != null)
                         disposibleInstance.Dispose();
                 }
-                this.resolvedInstances.Remove(reference);
+                catch (ObjectDisposedException) { }
+
+                // Removes the instance from the list of resolved instances
+                this.resolvedInstances.Remove(instance);
             }
         }
 
