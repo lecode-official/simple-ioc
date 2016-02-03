@@ -28,6 +28,13 @@ namespace System.InversionOfControl
         /// <returns>Returns an instance of the type that is to be resolved.</returns>
         object Resolve();
 
+        /// <summary>
+        /// Resolves the specified type by creating a new instance of it. The objects specified <c>explicitConstructorParameters</c> are preferred, when injecting into the constructor.
+        /// </summary>
+        /// <param name="explicitConstructorParameters">A list of constructor parameters, which are preferred, when injecting into the constructor. Not all explicit parameters may be used.</param>
+        /// <returns>Returns an instance of the type that is to be resolved.</returns>
+        object Resolve(params object[] explicitConstructorParameters);
+
         #endregion
     }
 }
