@@ -12,6 +12,30 @@ namespace System.InversionOfControl
     /// </summary>
     internal interface IBinding : IDisposable
     {
+        #region Properties
+
+        /// <summary>
+        /// Gets the type that is bound by the binding.
+        /// </summary>
+        Type TypeBound { get; }
+
+        /// <summary>
+        /// Gets the type to which the binding should be resolved to.
+        /// </summary>
+        Type TypeToResolveTo { get; }
+
+        /// <summary>
+        /// Gets the type into which the binding should only inject to.
+        /// </summary>
+        Type TypeInjectedInto { get; }
+
+        /// <summary>
+        /// Gets a value that determines whether the binding should inject into the type specified in <see cref="TypeInjectedInto"/> and its sub-classes or only into the type specified in <see cref="TypeInjectedInto"/>. Only applies if <see cref="TypeInjectedInto"/> is not <c>null</c>.
+        /// </summary>
+        bool ShouldOnlyInjectExactlyInto { get; }
+
+        #endregion
+
         #region Methods
 
         /// <summary>

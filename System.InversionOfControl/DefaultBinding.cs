@@ -21,11 +21,12 @@ namespace System.InversionOfControl
         /// Initializes a new <see cref="DefaultBinding"/> instance. It is private because this class uses the factory pattern to instantiate new instances.
         /// </summary>
         /// <param name="kernel">The kernel, which is needed to resolve any dependencies that this binding has to other bindings, when resolving a type.</param>
-        /// <param name="typeToBeResolved">The type that is to be resolved.</param>
-        private DefaultBinding(Kernel kernel, Type typeToBeResolved)
+        /// <param name="typeToResolveTo">The type that is to be resolved.</param>
+        private DefaultBinding(Kernel kernel, Type typeToResolveTo)
         {
             this.kernel = kernel;
-            this.typeToBeResolved = typeToBeResolved;
+            this.TypeBound = typeToResolveTo;
+            this.TypeToResolveTo = typeToResolveTo;
         }
 
         #endregion
@@ -36,12 +37,7 @@ namespace System.InversionOfControl
         /// Contains the kernel, which is needed to resolve any dependencies that this binding has to other bindings, when resolving a type.
         /// </summary>
         private Kernel kernel;
-
-        /// <summary>
-        /// Contains the type that is to be resolved by the default binding.
-        /// </summary>
-        private Type typeToBeResolved;
-
+        
         /// <summary>
         /// Contains a list of all the instances that have been resolved by this binding.
         /// </summary>
@@ -51,7 +47,43 @@ namespace System.InversionOfControl
         /// Contains a value that determines whether binding is currently being disposed.
         /// </summary>
         private bool isDisposing;
-        
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// Contains the type that is bound by the binding.
+        /// </summary>
+        public Type TypeBound { get; private set; }
+
+        /// <summary>
+        /// Contains the type to which the binding should be resolved to.
+        /// </summary>
+        public Type TypeToResolveTo { get; private set; }
+
+        /// <summary>
+        /// Contains the type into which the binding should only inject to. Since the default binding is just a short-circuit, when no other binding applies, there are no restrictions on the type into which the resolved instances can be injected into.
+        /// </summary>
+        public Type TypeInjectedInto
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Contains a value that determines whether the binding should inject into the type specified in <see cref="TypeInjectedInto"/> and its sub-classes or only into the type specified in <see cref="TypeInjectedInto"/>. Since the default binding is just a short-circuit, when no other binding applies, there are no restrictions on the type into which the resolved instances can be injected into.
+        /// </summary>
+        public bool ShouldOnlyInjectExactlyInto
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         #endregion
 
         #region Public Static Methods
@@ -89,7 +121,7 @@ namespace System.InversionOfControl
         public bool CanResolve(Type typeToResolve, Type typeInjectedInto)
         {
             // The default binding is only able to resolve excactly the type it was created for
-            return this.typeToBeResolved == typeToResolve;
+            return this.TypeToResolveTo == typeToResolve;
         }
 
         /// <summary>
@@ -108,14 +140,14 @@ namespace System.InversionOfControl
         public object Resolve(params object[] explicitConstructorParameters)
         {
             // Gets the information about all the constructors of the type and sorts them by their parameter count (the algorithm is greedy and tries to take the constructor that has the most parameters it is able to resolve)
-            TypeInfo typeInformation = this.typeToBeResolved.GetTypeInfo();
+            TypeInfo typeInformation = this.TypeToResolveTo.GetTypeInfo();
             IOrderedEnumerable<ConstructorInfo> constructorInformations = typeInformation.DeclaredConstructors.OrderByDescending(constructorInformation => constructorInformation.GetParameters().Count());
 
             // Cycles over all the constructors and tries them one by one
             foreach (ConstructorInfo constructorInformation in constructorInformations)
             {
                 // Gets all the parameters of the constructor
-                Dictionary<ParameterInfo, IBinding> parameterInformations = constructorInformation.GetParameters().ToDictionary(parameterInformation => parameterInformation, parameterInformation => this.kernel.FindMatchingBinding(parameterInformation.ParameterType, this.typeToBeResolved));
+                Dictionary<ParameterInfo, IBinding> parameterInformations = constructorInformation.GetParameters().ToDictionary(parameterInformation => parameterInformation, parameterInformation => this.kernel.FindMatchingBinding(parameterInformation.ParameterType, this.TypeToResolveTo));
 
                 // Tries to resolve all the parameters
                 List<object> parameterValues = new List<object>();
