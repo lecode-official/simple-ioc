@@ -97,7 +97,15 @@ namespace System.InversionOfControl
         /// </summary>
         /// <exception cref="ResolveException">If the type could not be resolved, an <see cref="ResolveException"/> exception is thrown.</exception>
         /// <returns>Returns an instance of the type that is to be resolved.</returns>
-        public object Resolve()
+        public object Resolve() => this.Resolve(new object[0]);
+
+        /// <summary>
+        /// Resolves the specified type by creating a new instance of it.
+        /// </summary>
+        /// <param name="explicitConstructorParameters">A list of constructor parameters, which are preferred, when injecting into the constructor. Not all explicit parameters may be used.</param>
+        /// <exception cref="ResolveException">If the type could not be resolved, an <see cref="ResolveException"/> exception is thrown.</exception>
+        /// <returns>Returns an instance of the type that is to be resolved.</returns>
+        public object Resolve(params object[] explicitConstructorParameters)
         {
             // Gets the information about all the constructors of the type and sorts them by their parameter count (the algorithm is greedy and tries to take the constructor that has the most parameters it is able to resolve)
             TypeInfo typeInformation = this.typeToBeResolved.GetTypeInfo();
@@ -115,21 +123,17 @@ namespace System.InversionOfControl
                 {
                     foreach (KeyValuePair<ParameterInfo, IBinding> parameterInformation in parameterInformations)
                     {
-                        // Tries to resolve the type of the paramter, if that does not work, then the default value for the parameter is used, if it has no default value, then the next constructor is tried
-                        try
-                        {
-                            // Checks if a binding for the parameter could be found, if not then a resolve exception is thronw, otherwise, it tries to resolve the paramter type
-                            if (parameterInformation.Value == null)
-                                throw new ResolveException("No binding for constructor parameter found.");
+                        // Checks if there is a default constructor parameter, which would resolve the value of the parameter, if not then it is checked, whether there is a binding, which can resolve the parameter, then it is
+                        // checked, if the parameter has a default value, that can be used, otherwise the parameter can not be resolved
+                        object explicitConstructorParameter = explicitConstructorParameters.Where(parameter => parameter != null).FirstOrDefault(parameter => parameterInformation.Key.ParameterType.GetTypeInfo().IsAssignableFrom(parameter.GetType().GetTypeInfo()));
+                        if (explicitConstructorParameter != null)
+                            parameterValues.Add(explicitConstructorParameter);
+                        else if (parameterInformation.Value != null)
                             parameterValues.Add(parameterInformation.Value.Resolve());
-                        }
-                        catch (ResolveException)
-                        {
-                            if (parameterInformation.Key.HasDefaultValue)
-                                parameterValues.Add(parameterInformation.Key.DefaultValue);
-                            else
-                                throw;
-                        }
+                        else if (parameterInformation.Key.HasDefaultValue)
+                            parameterValues.Add(parameterInformation.Key.DefaultValue);
+                        else
+                            throw new ResolveException();
                     }
                 }
                 catch (ResolveException)
