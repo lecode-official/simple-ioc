@@ -4,7 +4,7 @@ A simple and light-weight inversion of control container, which makes it possibl
 
 ## Using the Project
 
-The project is available on NuGet: https://www.nuget.org/packages/System.InversionOfControl/0.1.0.
+The project is available on NuGet: https://www.nuget.org/packages/System.InversionOfControl.
 
 ```batch
 PM> Install-Package System.InversionOfControl
