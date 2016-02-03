@@ -329,7 +329,7 @@ namespace System.InversionOfControl
         /// <typeparam name="TInjectionTarget">The type the binding should only be injected into.</typeparam>
         public void WhenInjectedInto<TInjectionTarget>() where TInjectionTarget : class
         {
-            this.typeInjectedInto = typeof(T);
+            this.typeInjectedInto = typeof(TInjectionTarget);
             this.shouldOnlyInjectExactlyInto = false;
         }
 
@@ -341,7 +341,7 @@ namespace System.InversionOfControl
         public void WhenInjectedExactlyInto<TInjectionTarget>() where TInjectionTarget : class
         {
             // Validates whether the type is qualified
-            Type newTypeInjectedInto = typeof(T);
+            Type newTypeInjectedInto = typeof(TInjectionTarget);
             TypeInfo typeInformation = newTypeInjectedInto.GetTypeInfo();
             if (typeInformation.IsAbstract || typeInformation.IsInterface)
                 throw new InvalidOperationException("Type injected into must not be abstract or interface.");
