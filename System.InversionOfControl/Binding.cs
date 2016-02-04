@@ -287,18 +287,21 @@ namespace System.InversionOfControl
         /// <summary>
         /// Binds the binding in transient scope, which means everytime the binding is resolved, a new instance of the bound type is created.
         /// </summary>
-        public IBindingWhenInjectedIntoSyntax InTransientScope()
-        {
-            this.scope = ResolvingScope.Transient;
-            return this;
-        }
+        public IBindingWhenInjectedIntoSyntax InTransientScope() => this.InScope(ResolvingScope.Transient);
 
         /// <summary>
         /// Binds the binding in singleton scope, which means that only the first time the binding is resolved, a new instance of the bound type is creaeted. If one already exists, then is returned.
         /// </summary>
-        public IBindingWhenInjectedIntoSyntax InSingletonScope()
+        public IBindingWhenInjectedIntoSyntax InSingletonScope() => this.InScope(ResolvingScope.Singleton);
+
+        /// <summary>
+        /// Binds the binding in the specified scope.
+        /// </summary>
+        /// <param name="scope">The scope in which the binding should be bound.</param>
+        /// <returns>Returns the binding for chaining calls.</returns>
+        public IBindingWhenInjectedIntoSyntax InScope(ResolvingScope scope)
         {
-            this.scope = ResolvingScope.Singleton;
+            this.scope = scope;
             return this;
         }
 
@@ -310,9 +313,15 @@ namespace System.InversionOfControl
         /// Determines that the binding should only be used when the binding is being injected into the specified type or a sub-class of it.
         /// </summary>
         /// <typeparam name="TInjectionTarget">The type the binding should only be injected into.</typeparam>
-        public void WhenInjectedInto<TInjectionTarget>()
+        public void WhenInjectedInto<TInjectionTarget>() => this.WhenInjectedInto(typeof(TInjectionTarget));
+
+        /// <summary>
+        /// Determines that the binding should only be used when the binding is being injected into the specified type or a sub-class of it.
+        /// </summary>
+        /// <param name="type">The type the binding should only be injected into.</param>
+        public void WhenInjectedInto(Type type)
         {
-            this.TypeInjectedInto = typeof(TInjectionTarget);
+            this.TypeInjectedInto = type;
             this.ShouldOnlyInjectExactlyInto = false;
         }
 
@@ -321,10 +330,16 @@ namespace System.InversionOfControl
         /// </summary>
         /// <exception cref="InvalidOperationException">When the specified type is abstract or an interface, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
         /// <typeparam name="TInjectionTarget">The type the binding should only be injected into.</typeparam>
-        public void WhenInjectedExactlyInto<TInjectionTarget>()
+        public void WhenInjectedExactlyInto<TInjectionTarget>() => this.WhenInjectedExactlyInto(typeof(TInjectionTarget));
+
+        /// <summary>
+        /// Determines that the binding should only be used when the binding is being injected exactly into the specified.
+        /// </summary>
+        /// <param name="type">The type the binding should only be injected into.</param>
+        public void WhenInjectedExactlyInto(Type type)
         {
             // Validates whether the type is qualified
-            Type newTypeInjectedInto = typeof(TInjectionTarget);
+            Type newTypeInjectedInto = type;
             TypeInfo typeInformation = newTypeInjectedInto.GetTypeInfo();
             if (typeInformation.IsAbstract || typeInformation.IsInterface)
                 throw new InvalidOperationException("Type injected into must not be abstract or interface.");

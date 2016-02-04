@@ -4,7 +4,7 @@ namespace System.InversionOfControl
     /// <summary>
     /// Represents an enumeration of the scopes in which a type can be resolved.
     /// </summary>
-    internal enum ResolvingScope
+    public enum ResolvingScope
     {
         /// <summary>
         /// Each time a type is resolved, a new instance is created.

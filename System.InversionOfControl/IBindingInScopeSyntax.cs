@@ -9,6 +9,13 @@ namespace System.InversionOfControl
         #region Methods
 
         /// <summary>
+        /// Binds the binding in the specified scope.
+        /// </summary>
+        /// <param name="scope">The scope in which the binding should be bound.</param>
+        /// <returns>Returns the binding for chaining calls.</returns>
+        IBindingWhenInjectedIntoSyntax InScope(ResolvingScope scope);
+
+        /// <summary>
         /// Binds the binding in transient scope, which means everytime the binding is resolved, a new instance of the bound type is created.
         /// </summary>
         /// <returns>Returns the binding for chaining calls.</returns>
