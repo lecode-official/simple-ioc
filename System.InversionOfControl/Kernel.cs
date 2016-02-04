@@ -87,15 +87,24 @@ namespace System.InversionOfControl
         /// Tries to resolve the specified type.
         /// </summary>
         /// <param name="type">The type for which an instance is to be created.</param>
+        /// <param name="explicitConstructorParameters">A list of constructor parameters, which are preferred, when injecting into the constructor. Not all explicit parameters may be used.</param>
         /// <exception cref="ResolveException">If the type could not be resolved, an <see cref="ResolveException"/> exception is thrown.</exception>
         /// <returns>Returns the resolved object.</returns>
-        public object Resolve(Type type)
+        public object Resolve(Type type, params object[] explicitConstructorParameters)
         {
             IBinding binding = this.FindMatchingBinding(type, null);
             if (binding == null)
                 throw new ResolveException("No matching binding found.");
-            return binding.Resolve();
+            return binding.Resolve(explicitConstructorParameters);
         }
+
+        /// <summary>
+        /// Tries to resolve the specified type.
+        /// </summary>
+        /// <param name="type">The type for which an instance is to be created.</param>
+        /// <exception cref="ResolveException">If the type could not be resolved, an <see cref="ResolveException"/> exception is thrown.</exception>
+        /// <returns>Returns the resolved object.</returns>
+        public object Resolve(Type type) => this.Resolve(type, new object[0]);
 
         /// <summary>
         /// Tries to resolve the specified type.
@@ -103,10 +112,16 @@ namespace System.InversionOfControl
         /// <typeparam name="T">The type for which an instance is to be created.</typeparam>
         /// <exception cref="ResolveException">If the type could not be resolved, an <see cref="ResolveException"/> exception is thrown.</exception>
         /// <returns>Returns the resolved object.</returns>
-        public T Resolve<T>()
-        {
-            return (T)this.Resolve(typeof(T));
-        }
+        public T Resolve<T>() => (T)this.Resolve(typeof(T));
+
+        /// <summary>
+        /// Tries to resolve the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type for which an instance is to be created.</typeparam>
+        /// <param name="explicitConstructorParameters">A list of constructor parameters, which are preferred, when injecting into the constructor. Not all explicit parameters may be used.</param>
+        /// <exception cref="ResolveException">If the type could not be resolved, an <see cref="ResolveException"/> exception is thrown.</exception>
+        /// <returns>Returns the resolved object.</returns>
+        public T Resolve<T>(params object[] explicitConstructorParameters) => (T)this.Resolve(typeof(T), explicitConstructorParameters);
 
         #endregion
 
