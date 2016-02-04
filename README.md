@@ -2,6 +2,13 @@
 
 A simple and light-weight inversion of control container, which makes it possible to define dependencies declaratively in code, rather than in configuration files.
 
+## Acknowledgements
+
+[Ninject](http://www.ninject.org/) may probably have noticed, that Simple IoC looks a lot like [Ninject](http://www.ninject.org/). This is actually no coincidence,
+this project originally was created because we were developing on a platform, where [Ninject](http://www.ninject.org/) was unavailable at the time.
+[Ninject](http://www.ninject.org/) is a great inversion of control container and still our personal favorite. Because of that we want give a big shoutout to
+[Nate Kohari](http://nate.io/) who is the brilliant developer behind [Ninject](http://www.ninject.org/). We really appreciate his great work for the community.
+
 ## Using the Project
 
 The project is available on NuGet: https://www.nuget.org/packages/System.InversionOfControl.
