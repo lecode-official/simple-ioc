@@ -1,10 +1,4 @@
 ﻿
-#region Using Directives
-
-using System;
-
-#endregion
-
 namespace System.InversionOfControl
 {
     /// <summary>
@@ -18,18 +12,14 @@ namespace System.InversionOfControl
         /// Initializes a new <see cref="ResolveException"/> instance.
         /// </summary>
         public ResolveException()
-            : base()
-        {
-        }
+            : base() { }
 
         /// <summary>
         /// Initializes a new <see cref="ResolveException"/> instance.
         /// </summary>
         /// <param name="message">The exception message.</param>
         public ResolveException(string message)
-            : base(message)
-        {
-        }
+            : base(message) { }
 
         /// <summary>
         /// Initializes a new <see cref="ResolveException"/> instance.
@@ -37,9 +27,7 @@ namespace System.InversionOfControl
         /// <param name="message">The exception message.</param>
         /// <param name="innerException">The original exception that caused this exception to be thrown.</param>
         public ResolveException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
+            : base(message, innerException) { }
 
         #endregion
     }
