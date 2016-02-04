@@ -20,6 +20,21 @@ Project("{FF286327-C783-4F7A-AB73-9BCBAD0D4460}") = "System.InversionOfControl",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleIoc.Samples.Console", "Samples\SimpleIoc.Samples.Console\SimpleIoc.Samples.Console.csproj", "{4B44E72C-FADA-4D9A-A14C-16E5D5455B02}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{E4D69B26-582A-4F8E-8BB6-49C34CEB66D5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{CF8087FA-4090-4E34-9A86-862896945BCB}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation\Images\Banner.png = Documentation\Images\Banner.png
+		Documentation\Images\Logo.fw.png = Documentation\Images\Logo.fw.png
+		Documentation\Images\Logo.ico = Documentation\Images\Logo.ico
+		Documentation\Images\Logo1024x1024.png = Documentation\Images\Logo1024x1024.png
+		Documentation\Images\Logo128x128.png = Documentation\Images\Logo128x128.png
+		Documentation\Images\Logo256x256.png = Documentation\Images\Logo256x256.png
+		Documentation\Images\Logo32x32.png = Documentation\Images\Logo32x32.png
+		Documentation\Images\Logo512x512.png = Documentation\Images\Logo512x512.png
+		Documentation\Images\Logo64x64.png = Documentation\Images\Logo64x64.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,5 +60,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6E553BB2-19CB-452D-9970-3D3A055321A3} = {DA2E7ADA-C07F-4308-9BDC-6D656A6754F0}
 		{4B44E72C-FADA-4D9A-A14C-16E5D5455B02} = {C0972F00-A665-41AE-AE71-024170E1BD89}
+		{E4D69B26-582A-4F8E-8BB6-49C34CEB66D5} = {EC5F39BC-F816-4E3E-A96F-80B2FCD2CE23}
+		{CF8087FA-4090-4E34-9A86-862896945BCB} = {E4D69B26-582A-4F8E-8BB6-49C34CEB66D5}
 	EndGlobalSection
 EndGlobal
