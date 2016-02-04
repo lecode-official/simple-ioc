@@ -14,7 +14,7 @@ namespace System.InversionOfControl
         /// </summary>
         /// <typeparam name="TResolve">The type to which the binding is bound.</typeparam>
         /// <returns>Returns the binding for chaining calls.</returns>
-        IBindingInScopeSyntax ToType<TResolve>() where TResolve : class, T;
+        IBindingInScopeSyntax ToType<TResolve>() where TResolve : T;
 
         /// <summary>
         /// Specifies that the binding should resolve to itself.
@@ -27,7 +27,7 @@ namespace System.InversionOfControl
         /// </summary>
         /// <typeparam name="TResolve">The type to which the binding is bound.</typeparam>
         /// <returns>Returns the binding for chaining calls.</returns>
-        IBindingInScopeSyntax ToFactory<TResolve>(Func<TResolve> factory) where TResolve : class, T;
+        IBindingInScopeSyntax ToFactory<TResolve>(Func<TResolve> factory) where TResolve : T;
 
         #endregion
     }

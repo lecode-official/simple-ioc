@@ -15,7 +15,7 @@ namespace System.InversionOfControl
     /// Represents a binding of a type that can be used by the dependency injection kernel to resolve that type to a concrete instance.
     /// </summary>
     /// <typeparam name="T">The type that is to be bound.</typeparam>
-    internal sealed class Binding<T> : IBinding, IBindingToSyntax<T>, IBindingInScopeSyntax, IBindingWhenInjectedIntoSyntax where T : class
+    internal sealed class Binding<T> : IBinding, IBindingToSyntax<T>, IBindingInScopeSyntax, IBindingWhenInjectedIntoSyntax
     {
         #region Constructors
 
@@ -48,13 +48,7 @@ namespace System.InversionOfControl
         /// Contains the factory method, which should be used to instantiate the type.
         /// </summary>
         private Func<T> typeResolveFactory;
-
-        /// <summary>
-        /// Contains a resolved singleton instance. This is only used if the binding is in singleton scope. A resolved singleton instance is stored separately, because it must not be a weak reference (if it were, there is a chance that the
-        /// reference gets lost).
-        /// </summary>
-        private T resolvedSingletonInstance = null;
-
+        
         /// <summary>
         /// Contains a list of all the instances that have been resolved by this binding.
         /// </summary>
@@ -162,20 +156,15 @@ namespace System.InversionOfControl
         public object Resolve(params object[] explicitConstructorParameters)
         {
             // Checks if the resolve scope is singleton and there is already an instance, if so then the existent instance is returned
-            if (this.scope == ResolvingScope.Singleton && this.resolvedSingletonInstance != null)
-                return this.resolvedSingletonInstance;
+            if (this.scope == ResolvingScope.Singleton && this.resolvedInstances.Any())
+                return this.resolvedInstances.First();
 
             // Checks if the user specified a factory for the resolving, if so, it is invoked and the result is returned
             if (this.typeResolveFactory != null)
             {
-                // Creates the instance by invoking the factory method
+                // Creates the instance by invoking the factory method and adds it to the list of resolved instances
                 T instance = (T)this.typeResolveFactory();
-
-                // Stores the resolved instance (if the binding is in singleton scope, then it is stored separately)
-                if (this.scope == ResolvingScope.Singleton)
-                    this.resolvedSingletonInstance = instance;
-                else
-                    this.resolvedInstances.Add(instance);
+                this.resolvedInstances.Add(instance);
 
                 // Returns the created instance
                 return instance;
@@ -219,14 +208,9 @@ namespace System.InversionOfControl
                 // Tries to invoke the default constructor and returns the created object
                 try
                 {
-                    // Creates the instance by invoking the constructor
+                    // Creates the instance by invoking the constructor and adds it to the list of resolved instances
                     T instance = (T)constructorInformation.Invoke(parameterValues.ToArray());
-
-                    // Stores the resolved instance (if the binding is in singleton scope, then it is stored separately)
-                    if (this.scope == ResolvingScope.Singleton)
-                        this.resolvedSingletonInstance = instance;
-                    else
-                        this.resolvedInstances.Add(instance);
+                    this.resolvedInstances.Add(instance);
 
                     // Returns the created instance
                     return instance;
@@ -256,7 +240,7 @@ namespace System.InversionOfControl
         /// If the specified type is generic, is abstract, is not a class or struct, or does not inherit or implement the bound type, then an <see cref="InvalidOperationException"/> exception is thrown.
         /// </exception>
         /// <returns>Returns the binding for chaining calls.</returns>
-        public IBindingInScopeSyntax ToType<TResolve>() where TResolve : class, T
+        public IBindingInScopeSyntax ToType<TResolve>() where TResolve : T
         {
             // Gets the type information for the type that is to be bound
             Type newTypeToResolveTo = typeof(TResolve);
@@ -287,11 +271,11 @@ namespace System.InversionOfControl
         /// <typeparam name="TResolve">The type to which the binding is bound.</typeparam>
         /// <param name="factory">The factory method, which should be used to instantiate the type.</param>
         /// <returns>Returns the binding for chaining calls.</returns>
-        public IBindingInScopeSyntax ToFactory<TResolve>(Func<TResolve> factory) where TResolve : class, T
+        public IBindingInScopeSyntax ToFactory<TResolve>(Func<TResolve> factory) where TResolve : T
         {
             // Stores the type to which the binding should resolve and the factory, which is used to instantiate the type
             this.ToType<TResolve>();
-            this.typeResolveFactory = factory;
+            this.typeResolveFactory = factory as Func<T>;
 
             // Returns the binding so that calls to it may be chained
             return this;
@@ -327,7 +311,7 @@ namespace System.InversionOfControl
         /// Determines that the binding should only be used when the binding is being injected into the specified type or a sub-class of it.
         /// </summary>
         /// <typeparam name="TInjectionTarget">The type the binding should only be injected into.</typeparam>
-        public void WhenInjectedInto<TInjectionTarget>() where TInjectionTarget : class
+        public void WhenInjectedInto<TInjectionTarget>()
         {
             this.TypeInjectedInto = typeof(TInjectionTarget);
             this.ShouldOnlyInjectExactlyInto = false;
@@ -338,7 +322,7 @@ namespace System.InversionOfControl
         /// </summary>
         /// <exception cref="InvalidOperationException">When the specified type is abstract or an interface, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
         /// <typeparam name="TInjectionTarget">The type the binding should only be injected into.</typeparam>
-        public void WhenInjectedExactlyInto<TInjectionTarget>() where TInjectionTarget : class
+        public void WhenInjectedExactlyInto<TInjectionTarget>()
         {
             // Validates whether the type is qualified
             Type newTypeInjectedInto = typeof(TInjectionTarget);
@@ -381,16 +365,6 @@ namespace System.InversionOfControl
                 // Removes the instance from the list of instances
                 this.resolvedInstances.Remove(instance);
             }
-
-            // Checks if there is a singleton instance that was created, and disposes of it, if it implements IDisposable, if it already has been disposed of, then nothing is done
-            try
-            {
-                IDisposable singletonDisposable = this.resolvedSingletonInstance as IDisposable;
-                if (singletonDisposable != null)
-                    singletonDisposable.Dispose();
-            }
-            catch (ObjectDisposedException) { }
-            this.resolvedSingletonInstance = null;
         }
 
         #endregion

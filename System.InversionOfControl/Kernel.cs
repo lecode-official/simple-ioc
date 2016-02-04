@@ -76,7 +76,7 @@ namespace System.InversionOfControl
         /// </summary>
         /// <typeparam name="T">The type that is to be bound.</typeparam>
         /// <returns>Returns the created binding.</returns>
-        public IBindingToSyntax<T> Bind<T>() where T : class
+        public IBindingToSyntax<T> Bind<T>()
         {
             Binding<T> newBinding = Binding<T>.Create(this);
             this.bindings.Add(newBinding);
