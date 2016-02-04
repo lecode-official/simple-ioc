@@ -17,10 +17,11 @@ namespace System.InversionOfControl
         /// <summary>
         /// Injects the properties of the second object into the properties with the same name of the first object.
         /// </summary>
+        /// <typeparam name="T">The type of the object into which is being injected.</typeparam>
         /// <param name="objectToInjectInto">The object into which the properties are to be injected.</param>
         /// <param name="injectionValues">An anonymous object, whose properties are matched to the properties of the object into which is being injected and assigns all possible values.</param>
         /// <returns>Returns the object into which the properties were injected.</returns>
-        public static object Inject<T>(this T objectToInjectInto, object injectionValues) where T : class
+        public static T Inject<T>(this T objectToInjectInto, object injectionValues) where T : class
         {
             // Validates the parameters
             if (objectToInjectInto == null)

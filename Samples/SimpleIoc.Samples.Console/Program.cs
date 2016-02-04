@@ -27,11 +27,17 @@ namespace SimpleIoc.Samples.Console
             kernel.Bind<IVehicle>().ToType<Car>();
             kernel.Bind<IVehicle>().ToType<Motorcycle>().InTransientScope().WhenInjectedInto<SuperCoolPerson>(); // Obviously super cool people drive motorcycles!
 
-            // Creates two persons and prints them out
+            // Creates some persons
             Person person = kernel.Resolve<Person>();
             Person superCoolPerson = kernel.Resolve<SuperCoolPerson>();
+            Person namedPerson = kernel.Resolve<NamedPerson>("Bob");
+            Person agedPerson = kernel.Resolve<NamedPerson>("Alice").Inject(new { Age = 40 });
+
+            // Prints out the personal information about the persons that were created
             System.Console.WriteLine(person);
             System.Console.WriteLine(superCoolPerson);
+            System.Console.WriteLine(namedPerson);
+            System.Console.WriteLine(agedPerson);
 
             // Waits for a key stroke, before the application is quit
             System.Console.ReadLine();
@@ -92,6 +98,58 @@ namespace SimpleIoc.Samples.Console
             /// <param name="vehicle">The vehicle that the super cool person is driving.</param>
             public SuperCoolPerson(IVehicle vehicle)
                 : base(vehicle) { }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Represents a person, which has a name, for whatever that is good for.
+        /// </summary>
+        private class NamedPerson : Person
+        {
+            #region Constructors
+
+            /// <summary>
+            /// Initializes a new <see cref="NamedPerson"/> instance (this constructor is only here to show off that the best matching constructor is selected when resolving a type).
+            /// </summary>
+            /// <param name="vehicle">The vehicle the person is driving.</param>
+            public NamedPerson(IVehicle vehicle)
+                : base(vehicle) { }
+            
+            /// <summary>
+            /// Initializes a new <see cref="NamedPerson"/> instance.
+            /// </summary>
+            /// <param name="name">The name of the person.</param>
+            /// <param name="vehicle">The vehicle the person is driving.</param>
+            public NamedPerson(string name, IVehicle vehicle)
+                : base(vehicle)
+            {
+                this.Name = name;
+            }
+
+            #endregion
+
+            #region Public Properties
+
+            /// <summary>
+            /// Gets or sets the name of the person.
+            /// </summary>
+            public string Name { get; set; }
+
+            /// <summary>
+            /// Gets or sets the age of the person.
+            /// </summary>
+            public int Age { get; set; }
+
+            #endregion
+
+            #region Object Implementation
+
+            /// <summary>
+            /// Generates a string out of the person object.
+            /// </summary>
+            /// <returns>Returns the textual representation of the person.</returns>
+            public override string ToString() => this.Age == 0 ? $"{this.Name} is driving a {this.Vehicle.Name}." : $"{this.Name} is driving a {this.Vehicle.Name} and is {this.Age} years old.";
 
             #endregion
         }
