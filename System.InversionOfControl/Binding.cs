@@ -15,7 +15,7 @@ namespace System.InversionOfControl
     /// Represents a binding of a type that can be used by the dependency injection kernel to resolve that type to a concrete instance.
     /// </summary>
     /// <typeparam name="T">The type that is to be bound.</typeparam>
-    internal sealed class Binding<T> : IBinding, IBindingToSyntax<T>, IBindingInScopeSyntax, IBindingWhenInjectedIntoSyntax
+    internal sealed class Binding<T> : IBinding, IBindingToSyntax<T>, IBindingInScopeOrWhenInjectedIntoSyntax
     {
         #region Constructors
 
@@ -240,7 +240,7 @@ namespace System.InversionOfControl
         /// If the specified type is generic, is abstract, is not a class or struct, or does not inherit or implement the bound type, then an <see cref="InvalidOperationException"/> exception is thrown.
         /// </exception>
         /// <returns>Returns the binding for chaining calls.</returns>
-        public IBindingInScopeSyntax ToType<TResolve>() where TResolve : T
+        public IBindingInScopeOrWhenInjectedIntoSyntax ToType<TResolve>() where TResolve : T
         {
             // Gets the type information for the type that is to be bound
             Type newTypeToResolveTo = typeof(TResolve);
@@ -263,14 +263,14 @@ namespace System.InversionOfControl
         /// Specifies that the binding should resolve to itself.
         /// </summary>
         /// <returns>Returns the binding for chaining calls.</returns>
-        public IBindingInScopeSyntax ToSelf() => this.ToType<T>();
+        public IBindingInScopeOrWhenInjectedIntoSyntax ToSelf() => this.ToType<T>();
 
         /// <summary>
         /// Specified the factory to which the binding should be resolved.
         /// </summary>
         /// <param name="factory">The factory method, which should be used to instantiate the type.</param>
         /// <returns>Returns the binding for chaining calls.</returns>
-        public IBindingInScopeSyntax ToFactory(Func<T> factory)
+        public IBindingInScopeOrWhenInjectedIntoSyntax ToFactory(Func<T> factory)
         {
             // Stores the type to which the binding should resolve and the factory, which is used to instantiate the type
             this.TypeToResolveTo = typeof(T);
