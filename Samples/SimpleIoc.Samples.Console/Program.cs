@@ -46,7 +46,8 @@ namespace SimpleIoc.Samples.Console
             System.Console.WriteLine(kernel.Resolve<DateTime>().Ticks);
 
             // Waits for a key stroke, before the application is quit
-            System.Console.ReadLine();
+            System.Console.WriteLine("Press any key to quit...");
+            System.Console.ReadKey();
         }
 
         #endregion
