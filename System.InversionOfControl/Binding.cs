@@ -279,10 +279,7 @@ namespace System.InversionOfControl
         /// Specifies that the binding should resolve to itself.
         /// </summary>
         /// <returns>Returns the binding for chaining calls.</returns>
-        public IBindingInScopeSyntax ToSelf()
-        {
-            return this.ToType<T>();
-        }
+        public IBindingInScopeSyntax ToSelf() => this.ToType<T>();
 
         /// <summary>
         /// Specified the factory to which the binding should be resolved.

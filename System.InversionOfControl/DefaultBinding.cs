@@ -118,11 +118,7 @@ namespace System.InversionOfControl
         /// <param name="typeToResolve">The type that is to be resolved.</param>
         /// <param name="injectionTargetType">The type that the resolved type will be injected into. Can be <c>null</c> if the type is only resolved and not injected into anything.</param>
         /// <returns>Returns a value that determines whether the type can be resolved or not.</returns>
-        public bool CanResolve(Type typeToResolve, Type typeInjectedInto)
-        {
-            // The default binding is only able to resolve excactly the type it was created for
-            return this.TypeToResolveTo == typeToResolve;
-        }
+        public bool CanResolve(Type typeToResolve, Type typeInjectedInto) => this.TypeToResolveTo == typeToResolve;
 
         /// <summary>
         /// Resolves the specified type by creating a new instance of it.
