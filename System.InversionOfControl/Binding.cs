@@ -268,14 +268,13 @@ namespace System.InversionOfControl
         /// <summary>
         /// Specified the factory to which the binding should be resolved.
         /// </summary>
-        /// <typeparam name="TResolve">The type to which the binding is bound.</typeparam>
         /// <param name="factory">The factory method, which should be used to instantiate the type.</param>
         /// <returns>Returns the binding for chaining calls.</returns>
-        public IBindingInScopeSyntax ToFactory<TResolve>(Func<TResolve> factory) where TResolve : T
+        public IBindingInScopeSyntax ToFactory(Func<T> factory)
         {
             // Stores the type to which the binding should resolve and the factory, which is used to instantiate the type
-            this.ToType<TResolve>();
-            this.typeResolveFactory = factory as Func<T>;
+            this.TypeToResolveTo = typeof(T);
+            this.typeResolveFactory = factory;
 
             // Returns the binding so that calls to it may be chained
             return this;

@@ -25,9 +25,8 @@ namespace System.InversionOfControl
         /// <summary>
         /// Specified the factory to which the binding should be resolved.
         /// </summary>
-        /// <typeparam name="TResolve">The type to which the binding is bound.</typeparam>
         /// <returns>Returns the binding for chaining calls.</returns>
-        IBindingInScopeSyntax ToFactory<TResolve>(Func<TResolve> factory) where TResolve : T;
+        IBindingInScopeSyntax ToFactory(Func<T> factory);
 
         #endregion
     }
