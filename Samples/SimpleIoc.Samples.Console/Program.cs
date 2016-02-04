@@ -1,7 +1,9 @@
 ﻿
 #region Using Directives
 
+using System;
 using System.InversionOfControl;
+using System.Threading;
 
 #endregion
 
@@ -25,19 +27,23 @@ namespace SimpleIoc.Samples.Console
 
             // Binds the vehicles to the kernel
             kernel.Bind<IVehicle>().ToType<Car>();
-            kernel.Bind<IVehicle>().ToType<Motorcycle>().InTransientScope().WhenInjectedInto<SuperCoolPerson>(); // Obviously super cool people drive motorcycles!
+            kernel.Bind<IVehicle>().ToType<Motorcycle>().WhenInjectedInto<SuperCoolPerson>(); // Obviously super cool people drive motorcycles!
 
             // Creates some persons
             Person person = kernel.Resolve<Person>();
             Person superCoolPerson = kernel.Resolve<SuperCoolPerson>();
             Person namedPerson = kernel.Resolve<NamedPerson>("Bob");
-            Person agedPerson = kernel.Resolve<NamedPerson>("Alice").Inject(new { Age = 40 });
 
             // Prints out the personal information about the persons that were created
             System.Console.WriteLine(person);
             System.Console.WriteLine(superCoolPerson);
             System.Console.WriteLine(namedPerson);
-            System.Console.WriteLine(agedPerson);
+
+            // Demonstrates singleton scope, where the resolved instance is always the same
+            kernel.Bind<DateTime>().ToFactory(() => DateTime.UtcNow).InSingletonScope();
+            System.Console.WriteLine(kernel.Resolve<DateTime>().Ticks);
+            Thread.Sleep(1000);
+            System.Console.WriteLine(kernel.Resolve<DateTime>().Ticks);
 
             // Waits for a key stroke, before the application is quit
             System.Console.ReadLine();
@@ -135,12 +141,7 @@ namespace SimpleIoc.Samples.Console
             /// Gets or sets the name of the person.
             /// </summary>
             public string Name { get; set; }
-
-            /// <summary>
-            /// Gets or sets the age of the person.
-            /// </summary>
-            public int Age { get; set; }
-
+            
             #endregion
 
             #region Object Implementation
@@ -149,7 +150,7 @@ namespace SimpleIoc.Samples.Console
             /// Generates a string out of the person object.
             /// </summary>
             /// <returns>Returns the textual representation of the person.</returns>
-            public override string ToString() => this.Age == 0 ? $"{this.Name} is driving a {this.Vehicle.Name}." : $"{this.Name} is driving a {this.Vehicle.Name} and is {this.Age} years old.";
+            public override string ToString() => $"{this.Name} is driving a {this.Vehicle.Name}.";
 
             #endregion
         }
