@@ -30,6 +30,7 @@
     <LicenseUrl>https://raw.githubusercontent.com/lecode-official/simple-ioc/master/LICENSE</LicenseUrl>
     <Copyright>Copyright 2016 © David Neumann &amp; Lukas Rögner</Copyright>
     <Tags>IoC, Inversion of Control, Dependency Injection, Portable</Tags>
+    <IconUrl>https://raw.githubusercontent.com/lecode-official/ioc-abstractions/master/Documentation/Images/Logo128x128.png</IconUrl>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="License.txt" />
