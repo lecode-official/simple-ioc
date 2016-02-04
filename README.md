@@ -5,9 +5,12 @@ A simple and light-weight inversion of control container, which makes it possibl
 ## Acknowledgements
 
 [Ninject](http://www.ninject.org/) users may probably have noticed, that Simple IoC looks a lot like [Ninject](http://www.ninject.org/). This is actually no coincidence,
-this project originally was created because we were developing on a platform, where [Ninject](http://www.ninject.org/) was unavailable at the time. Simple IoC is
+this project was originally created because we were developing on a platform, where [Ninject](http://www.ninject.org/) was unavailable at the time. Simple IoC is
 heavily influenced by [Ninject](http://www.ninject.org/), which is a great inversion of control container and still our personal favorite. Because of that we want give
-a big shoutout to [Nate Kohari](http://nate.io/) who is the brilliant developer behind [Ninject](http://www.ninject.org/). We really appreciate his great work for the community.
+a big shoutout to [Nate Kohari](http://nate.io/) who is the brilliant developer behind [Ninject](http://www.ninject.org/). We really appreciate his great work for the
+community. Although [Ninject](http://www.ninject.org/) is a more professional and feature-complete inversion of control container, we still think that Simple IoC has
+its right to exist, because it was designed to be very simple and light-weight without lacking some of the most used features that [Ninject](http://www.ninject.org/)
+offers.
 
 ## Using the Project
 
