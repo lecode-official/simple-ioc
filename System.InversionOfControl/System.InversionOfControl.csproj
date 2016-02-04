@@ -45,6 +45,7 @@
     <Compile Include="IBindingToSyntax.cs" />
     <Compile Include="IBindingWhenInjectedIntoSyntax.cs" />
     <Compile Include="Kernel.cs" />
+    <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResolveException.cs" />
     <Compile Include="ResolvingScope.cs" />
