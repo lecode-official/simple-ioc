@@ -25,7 +25,7 @@
     <Owners>David Neumann &amp; Lukas Rögner</Owners>
     <Summary>A light-weight, portable inversion of control container for .NET.</Summary>
     <Description>A simple and light-weight inversion of control container, which makes it possible to define dependencies declaratively in code, rather than in configuration files.</Description>
-    <ReleaseNotes>Removed some more type constraints from the binding syntax, that did not make any sense. Also removed the object extensions and moved them to the abstractions project, made it possible to directly use the inject into syntax without having to explicitely specify the scope of the binding, and made it possible to directly specify the scope and the that is injected into.</ReleaseNotes>
+    <ReleaseNotes>Removed some more type constraints from the binding syntax, that did not make any sense. Also removed the object extensions and moved them to the abstractions project, made it possible to directly use the inject into syntax without having to explicitely specify the scope of the binding, and made it possible to directly specify the scope and the type that is injected into.</ReleaseNotes>
     <ProjectUrl>https://github.com/lecode-official/simple-ioc</ProjectUrl>
     <LicenseUrl>https://raw.githubusercontent.com/lecode-official/simple-ioc/master/LICENSE</LicenseUrl>
     <Copyright>Copyright 2016 © David Neumann &amp; Lukas Rögner</Copyright>
