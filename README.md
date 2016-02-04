@@ -30,3 +30,8 @@ package). Just clone the Git repository, open the solution in Visual Studio, and
 ```batch
 git pull https://github.com/lecode-official/simple-ioc.git
 ```
+
+## Contributions
+
+Currently we are not accepting any contributors, but if you want to help, we would greatly appreciate feedback and bug reports. To file a bug, please use GitHub's
+issue system. Alternatively, you can clone the repository and send us a pull request.
