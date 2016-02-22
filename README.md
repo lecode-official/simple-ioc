@@ -31,6 +31,40 @@ package). Just clone the Git repository, open the solution in Visual Studio, and
 git pull https://github.com/lecode-official/simple-ioc.git
 ```
 
+## Samples
+
+It is very simple to create a new IoC container, which is called kernel in Simple IoC speak:
+
+```csharp
+Kernel kernel = new Kernel();
+```
+
+Once you have obtained a kernel, you can start to bind types to it:
+
+```csharp
+kernel.Bind<IVehicle>().ToType<Car>();
+```
+You can also bind types only when they are injected into another type. In this instance, a `Motorcycle` is injected into a `Person` if the `Person` is a `SuperCoolPerson`:
+
+```csharp
+kernel.Bind<IVehicle>().ToType<Motorcycle>().WhenInjectedInto<SuperCoolPerson>(); // Obviously super cool people drive motorcycles!
+```
+
+Now you can use the kernel to retrieve instances of the types:
+
+```csharp
+Person person = kernel.Resolve<Person>();
+Person superCoolPerson = kernel.Resolve<SuperCoolPerson>();
+```
+
+You will notice, when you evaluate these two statements, that `person` will get an instance `Car` inject, while the `superCoolPerson` will get an instance of `Motorcycle`
+injected. You can also pass arguments to the `Resolve` method, which will be prioritzed when injecting values into the constructors. When you evaluate the following
+statement, you will see, that the `namedPerson` will get the `string` `"Bob"` injected as its name.
+
+```csharp
+Person namedPerson = kernel.Resolve<NamedPerson>("Bob");
+```
+
 ## Contributions
 
 Currently we are not accepting any contributors, but if you want to help, we would greatly appreciate feedback and bug reports. To file a bug, please use GitHub's
