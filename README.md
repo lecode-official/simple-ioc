@@ -28,7 +28,7 @@ suffice, no extra plugins or tools are needed (except for the `System.InversionO
 package). Just clone the Git repository, open the solution in Visual Studio, and build the solution.
 
 ```batch
-git pull https://github.com/lecode-official/simple-ioc.git
+git clone https://github.com/lecode-official/simple-ioc
 ```
 
 ## Samples
