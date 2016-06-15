@@ -19,13 +19,13 @@
   <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
   <PropertyGroup Label="Configuration">
     <Id>System.InversionOfControl</Id>
-    <Version>0.1.5</Version>
+    <Version>0.1.6</Version>
     <Title>Simple IoC</Title>
     <Authors>David Neumann &amp; Lukas Rögner</Authors>
     <Owners>David Neumann &amp; Lukas Rögner</Owners>
     <Summary>A light-weight, portable inversion of control container for .NET.</Summary>
     <Description>A simple and light-weight inversion of control container, which makes it possible to define dependencies declaratively in code, rather than in configuration files.</Description>
-    <ReleaseNotes>Added the XML documentation, so that Intellisense provides more information to the user.</ReleaseNotes>
+    <ReleaseNotes>Now Simple IoC supports more versions of .NET.</ReleaseNotes>
     <ProjectUrl>https://github.com/lecode-official/simple-ioc</ProjectUrl>
     <LicenseUrl>https://raw.githubusercontent.com/lecode-official/simple-ioc/master/LICENSE</LicenseUrl>
     <Copyright>Copyright 2016 © David Neumann &amp; Lukas Rögner</Copyright>
