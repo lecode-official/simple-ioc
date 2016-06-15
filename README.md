@@ -57,7 +57,7 @@ Person person = kernel.Resolve<Person>();
 Person superCoolPerson = kernel.Resolve<SuperCoolPerson>();
 ```
 
-You will notice, when you evaluate these two statements, that `person` will get an instance `Car` inject, while the `superCoolPerson` will get an instance of `Motorcycle`
+You will notice, when you evaluate these two statements, that `person` will get an instance of `Car` injected, while the `superCoolPerson` will get an instance of `Motorcycle`
 injected. You can also pass arguments to the `Resolve` method, which will be prioritzed when injecting values into the constructors. When you evaluate the following
 statement, you will see, that the `namedPerson` will get the `string` `"Bob"` injected as its name.
 
