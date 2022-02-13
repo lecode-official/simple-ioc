@@ -1,6 +1,6 @@
 # Simple IoC
 
-![Simple IoC Logo](https://github.com/lecode-official/simple-ioc/blob/master/Documentation/Images/Banner.png "Simple IoC Logo")
+![Simple IoC Logo](https://github.com/lecode-official/simple-ioc/blob/main/Documentation/Images/Banner.png "Simple IoC Logo")
 
 A simple and light-weight inversion of control container, which makes it possible to define dependencies declaratively in code, rather than in configuration files.
 

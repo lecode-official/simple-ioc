@@ -27,10 +27,10 @@
     <Description>A simple and light-weight inversion of control container, which makes it possible to define dependencies declaratively in code, rather than in configuration files.</Description>
     <ReleaseNotes>Now Simple IoC supports more versions of .NET.</ReleaseNotes>
     <ProjectUrl>https://github.com/lecode-official/simple-ioc</ProjectUrl>
-    <LicenseUrl>https://raw.githubusercontent.com/lecode-official/simple-ioc/master/LICENSE</LicenseUrl>
+    <LicenseUrl>https://raw.githubusercontent.com/lecode-official/simple-ioc/main/LICENSE</LicenseUrl>
     <Copyright>Copyright 2016 © David Neumann &amp; Lukas Rögner</Copyright>
     <Tags>IoC, Inversion of Control, Dependency Injection, Portable</Tags>
-    <IconUrl>https://raw.githubusercontent.com/lecode-official/ioc-abstractions/master/Documentation/Images/Logo128x128.png</IconUrl>
+    <IconUrl>https://raw.githubusercontent.com/lecode-official/ioc-abstractions/main/Documentation/Images/Logo128x128.png</IconUrl>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="License.txt" />
